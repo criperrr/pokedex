@@ -9,56 +9,93 @@ export default function AutocompleteInput({
   textColor,
   borderColor,
   bgColor,
-  cardColor
+  cardColor,
 }) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filtradas, setFiltradas] = useState([]);
-  const onType = text => {
+  const onType = (text) => {
     onChangeText(text);
     if (text.length >= 1) {
       const lower = text.toLowerCase();
-      const matches = suggestions.filter(s => s.startsWith(lower));
+      const matches = suggestions.filter((s) => s.startsWith(lower));
       setFiltradas(matches);
       setShowSuggestions(matches.length > 0);
     } else {
       setShowSuggestions(false);
     }
   };
-  const onSelect = name => {
+  const onSelect = (name) => {
     onChangeText(name);
     setShowSuggestions(false);
   };
-  return <View style={{
-    flex: 1,
-    height: 45,
-    position: "relative",
-    zIndex: 1000,
-    elevation: 1000
-  }}>
-      <TextInput style={[styles.input, {
-      backgroundColor: bgColor,
-      color: textColor,
-      borderColor: borderColor
-    }, inputStyle]} placeholder={placeholder} placeholderTextColor={(textColor ?? "#fff") + "60"} value={value} onChangeText={onType} onBlur={() => setTimeout(() => setShowSuggestions(false), 150)} autoCapitalize="none" autoCorrect={false} />
-      {showSuggestions && <View style={[styles.suggestionList, {
-      backgroundColor: cardColor,
-      borderColor: borderColor
-    }]}>
-          {filtradas.map(item => <Pressable key={item} style={({
-        pressed
-      }) => [styles.suggestionItem, {
-        borderBottomColor: borderColor
-      }, pressed && {
-        opacity: 0.6
-      }]} onPress={() => onSelect(item)}>
-              <Text style={[styles.suggestionText, {
-          color: textColor
-        }]}>
+  return (
+    <View
+      style={{
+        flex: 1,
+        height: 45,
+        position: "relative",
+        zIndex: 1000,
+        elevation: 1000,
+      }}
+    >
+      <TextInput
+        style={[
+          styles.input,
+          {
+            backgroundColor: bgColor,
+            color: textColor,
+            borderColor: borderColor,
+          },
+          inputStyle,
+        ]}
+        placeholder={placeholder}
+        placeholderTextColor={(textColor ?? "#fff") + "60"}
+        value={value}
+        onChangeText={onType}
+        onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+      {showSuggestions && (
+        <View
+          style={[
+            styles.suggestionList,
+            {
+              backgroundColor: cardColor,
+              borderColor: borderColor,
+            },
+          ]}
+        >
+          {filtradas.map((item) => (
+            <Pressable
+              key={item}
+              style={({ pressed }) => [
+                styles.suggestionItem,
+                {
+                  borderBottomColor: borderColor,
+                },
+                pressed && {
+                  opacity: 0.6,
+                },
+              ]}
+              onPress={() => onSelect(item)}
+            >
+              <Text
+                style={[
+                  styles.suggestionText,
+                  {
+                    color: textColor,
+                  },
+                ]}
+              >
                 {item}
               </Text>
-            </Pressable>)}
-        </View>}
-    </View>;
+            </Pressable>
+          ))}
+        </View>
+      )}
+    </View>
+  );
 }
 const styles = StyleSheet.create({
   input: {
@@ -67,7 +104,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 12,
-    fontSize: 15
+    fontSize: 15,
   },
   suggestionList: {
     position: "absolute",
@@ -82,20 +119,20 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 4
+      height: 4,
     },
     shadowOpacity: 0.2,
     shadowRadius: 8,
-    elevation: 10
+    elevation: 10,
   },
   suggestionItem: {
     paddingHorizontal: 14,
     paddingVertical: 10,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   suggestionText: {
     fontSize: 14,
     fontWeight: "500",
-    textTransform: "capitalize"
-  }
+    textTransform: "capitalize",
+  },
 });

@@ -11,10 +11,14 @@ function resolveQuery(filters) {
     clauses.push("{ pokemonspecy: { is_legendary: { _eq: true } } }");
   }
   if (filters.tipoSelecionado) {
-    clauses.push(`{ pokemontypes: { type: { name: { _eq: "${filters.tipoSelecionado}" } } } }`);
+    clauses.push(
+      `{ pokemontypes: { type: { name: { _eq: "${filters.tipoSelecionado}" } } } }`,
+    );
   }
   if (filters.regiaoSelecionada) {
-    clauses.push(`{ pokemonspecy: { generation: { region: { name: { _eq: "${filters.regiaoSelecionada}" } } } } }`);
+    clauses.push(
+      `{ pokemonspecy: { generation: { region: { name: { _eq: "${filters.regiaoSelecionada}" } } } } }`,
+    );
   }
   for (const crit of filters.criterios) {
     if (!crit.valor.trim()) continue;
@@ -23,45 +27,57 @@ function resolveQuery(filters) {
         clauses.push(`{ name: { _ilike: "%${crit.valor}%" } }`);
         break;
       case "habilidade":
-        clauses.push(`{ pokemonabilities: { ability: { name: { _ilike: "%${crit.valor}%" } } } }`);
+        clauses.push(
+          `{ pokemonabilities: { ability: { name: { _ilike: "%${crit.valor}%" } } } }`,
+        );
         break;
       case "movimento":
-        clauses.push(`{ pokemonmoves: { move: { name: { _ilike: "%${crit.valor}%" } } } }`);
+        clauses.push(
+          `{ pokemonmoves: { move: { name: { _ilike: "%${crit.valor}%" } } } }`,
+        );
         break;
     }
   }
-  const whereArgument = clauses.length > 0 ? `(where: { _or: [ ${clauses.join(", ")} ] })` : "";
+  const whereArgument =
+    clauses.length > 0 ? `(where: { _or: [ ${clauses.join(", ")} ] })` : "";
   return `query CustomQuery { pokemon${whereArgument} { id name } }`;
 }
 export async function resolveFilters(filters) {
   const query = resolveQuery(filters);
   console.log("fetching query", query);
-  return await (await fetch(GRAPHQL_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "*/*"
-    },
-    body: JSON.stringify({
-      query: query,
-      variables: null,
-      operationName: "CustomQuery"
+  return await (
+    await fetch(GRAPHQL_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "*/*",
+      },
+      body: JSON.stringify({
+        query: query,
+        variables: null,
+        operationName: "CustomQuery",
+      }),
     })
-  })).json();
+  ).json();
 }
 export async function getLegendaryPokemonIds() {
-  return (await (await fetch(GRAPHQL_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "*/*"
-    },
-    body: JSON.stringify({
-      query: "query GetLegendaryPokemon { pokemonspecies(where: {is_legendary: {_eq: true}}) { id } }",
-      variables: null,
-      operationName: "GetLegendaryPokemon"
-    })
-  })).json()).data.pokemonspecies.map(pokemon => pokemon.id);
+  return (
+    await (
+      await fetch(GRAPHQL_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+        },
+        body: JSON.stringify({
+          query:
+            "query GetLegendaryPokemon { pokemonspecies(where: {is_legendary: {_eq: true}}) { id } }",
+          variables: null,
+          operationName: "GetLegendaryPokemon",
+        }),
+      })
+    ).json()
+  ).data.pokemonspecies.map((pokemon) => pokemon.id);
 }
 
 // ─── tradutor de PokeApiData → PokemonData ──────
@@ -75,28 +91,28 @@ function translatePokeApiDataToPokemonData(apiData) {
     height: apiData.height,
     weight: apiData.weight,
     base_experience: apiData.base_experience,
-    types: apiData.types.map(type => ({
+    types: apiData.types.map((type) => ({
       type: {
-        name: type.type.name
-      }
-    })),
-    abilities: apiData.abilities.map(ability => ({
-      ability: {
-        name: ability.ability.name
+        name: type.type.name,
       },
-      is_hidden: ability.is_hidden
     })),
-    stats: apiData.stats.map(stat => ({
+    abilities: apiData.abilities.map((ability) => ({
+      ability: {
+        name: ability.ability.name,
+      },
+      is_hidden: ability.is_hidden,
+    })),
+    stats: apiData.stats.map((stat) => ({
       base_stat: stat.base_stat,
       effort: stat.effort,
       stat: {
-        name: stat.stat.name
-      }
+        name: stat.stat.name,
+      },
     })),
-    moves: apiData.moves.map(move => ({
+    moves: apiData.moves.map((move) => ({
       move: {
-        name: move.move.name
-      }
+        name: move.move.name,
+      },
     })),
     sprites: {
       front_default: apiData.sprites.front_default,
@@ -107,8 +123,8 @@ function translatePokeApiDataToPokemonData(apiData) {
       back_shiny: apiData.sprites.back_shiny,
       front_shiny_female: apiData.sprites.front_shiny_female,
       back_shiny_female: apiData.sprites.back_shiny_female,
-      other: apiData.sprites.other
-    }
+      other: apiData.sprites.other,
+    },
   };
 }
 
@@ -131,28 +147,31 @@ export async function getAllTypes() {
 export async function getAllPokemonNames() {
   const res = await fetch(BASE_URL + "pokemon?limit=10000");
   const data = await res.json();
-  return data.results.map(p => p.name);
+  return data.results.map((p) => p.name);
 }
 export async function getAllAbilityNames() {
   const res = await fetch(BASE_URL + "ability?limit=10000");
   const data = await res.json();
-  return data.results.map(a => a.name);
+  return data.results.map((a) => a.name);
 }
 export async function getAllMoveNames() {
   const res = await fetch(BASE_URL + "move?limit=10000");
   const data = await res.json();
-  return data.results.map(m => m.name);
+  return data.results.map((m) => m.name);
 }
 // essa é especial pq faz uma limpeza e reformatação
 export async function getPokemonSpecies(speciesUrl) {
   const raw = await (await fetch(speciesUrl)).json();
-  const enFlavorEntry = raw.flavor_text_entries?.find(e => e.language.name === "en");
-  const enGenus = raw.genera?.find(g => g.language.name === "en");
+  const enFlavorEntry = raw.flavor_text_entries?.find(
+    (e) => e.language.name === "en",
+  );
+  const enGenus = raw.genera?.find((g) => g.language.name === "en");
   return {
     id: raw.id,
     name: raw.name,
     genus: enGenus?.genus ?? "",
-    flavor_text: enFlavorEntry?.flavor_text?.replace(/\f/g, " ").replace(/\n/g, " ") ?? "",
+    flavor_text:
+      enFlavorEntry?.flavor_text?.replace(/\f/g, " ").replace(/\n/g, " ") ?? "",
     generation: raw.generation?.name ?? "",
     habitat: raw.habitat?.name ?? null,
     color: raw.color?.name ?? "",
@@ -160,14 +179,14 @@ export async function getPokemonSpecies(speciesUrl) {
     capture_rate: raw.capture_rate ?? 0,
     base_happiness: raw.base_happiness ?? 0,
     gender_rate: raw.gender_rate ?? -1,
-    egg_groups: raw.egg_groups?.map(g => g.name) ?? [],
+    egg_groups: raw.egg_groups?.map((g) => g.name) ?? [],
     growth_rate: raw.growth_rate?.name ?? "",
     hatch_counter: raw.hatch_counter ?? null,
     forms_switchable: raw.forms_switchable ?? false,
     is_baby: raw.is_baby ?? false,
     is_legendary: raw.is_legendary ?? false,
     is_mythical: raw.is_mythical ?? false,
-    evolution_chain_url: raw.evolution_chain?.url ?? ""
+    evolution_chain_url: raw.evolution_chain?.url ?? "",
   };
 }
 function extractIdFromUrl(url) {
@@ -183,8 +202,10 @@ export async function getEvolutionChain(chainUrl) {
     let condition = null;
     if (details) {
       const extras = [];
-      if (details.min_happiness) extras.push(`Happiness ≥ ${details.min_happiness}`);
-      if (details.min_affection) extras.push(`Affection ≥ ${details.min_affection}`);
+      if (details.min_happiness)
+        extras.push(`Happiness ≥ ${details.min_happiness}`);
+      if (details.min_affection)
+        extras.push(`Affection ≥ ${details.min_affection}`);
       if (details.time_of_day) extras.push(details.time_of_day);
       if (details.known_move) extras.push(`Knows ${details.known_move.name}`);
       if (details.location) extras.push(`at ${details.location.name}`);
@@ -198,7 +219,7 @@ export async function getEvolutionChain(chainUrl) {
       minLevel: details?.min_level ?? null,
       trigger: details?.trigger?.name ?? null,
       item: details?.item?.name ?? null,
-      condition
+      condition,
     };
     const newPath = [...currentPath, stage];
     if (!node.evolves_to || node.evolves_to.length === 0) {

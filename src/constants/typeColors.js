@@ -18,5 +18,5 @@ export const TYPE_COLORS = {
   dragon: "#7038F8",
   dark: "#705848",
   steel: "#B8B8D0",
-  fairy: "#EE99AC"
+  fairy: "#EE99AC",
 };
