@@ -1,27 +1,32 @@
 {
   "compilerOptions": {
     "jsx": "react-native",
-    
     "target": "es2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    
     "rootDir": "./",
     "outDir": "./dist",
     "removeComments": false,
     "noEmit": false,
-
     "importHelpers": false,
     "noEmitHelpers": true,
     "sourceMap": false,
     "inlineSourceMap": false,
     "declaration": false,
-    
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": false,
     "skipLibCheck": true
   },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "dist", ".expo", ".expo-env.d.ts"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".expo",
+    ".expo-env.d.ts"
+  ],
+  "extends": "expo/tsconfig.base"
 }
