@@ -1,6 +1,6 @@
 // cores uau
 // eu gerei essas cores com ia, nao fui doido de pegar na mao uma a uma
-export const TYPE_COLORS: Record<string, string> = {
+export const TYPE_COLORS = {
   normal: "#A8A878",
   fire: "#F08030",
   water: "#6890F0",
@@ -18,5 +18,5 @@ export const TYPE_COLORS: Record<string, string> = {
   dragon: "#7038F8",
   dark: "#705848",
   steel: "#B8B8D0",
-  fairy: "#EE99AC",
+  fairy: "#EE99AC"
 };
